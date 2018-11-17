@@ -21,6 +21,7 @@ import com.work.chenfangwei.sound.lifeMannger.VoiceLifeMannger;
 import com.work.chenfangwei.sound.util.BindUtil;
 import com.work.chenfangwei.sound.util.SoundLog;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /*
@@ -106,8 +107,8 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
             @Override
             protected void entryRemoved(boolean evicted, String key, CacheId oldValue, CacheId newValue) {
                 int id=oldValue.getId();
-                if(true){
-                    Log.e(TAG,"id=="+id+"卸载是否成功==true");
+                if(soundPool.unload(id)){
+                    SoundLog.e("id=="+id+"卸载是否成功==true",this);
                     SoundResource resource=oldValue.getSoundResource();
                     if(resource!=null){
                         resource.clear();
@@ -115,7 +116,7 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
                     CacheIdFactory.remove(oldValue);
                 }else{
                     newValue=oldValue;
-                    Log.e(TAG,"id=="+id+"卸载是否成功==false");
+                    SoundLog.e("id=="+id+"卸载是否成功==false",this);
                 }
                 super.entryRemoved(evicted, key, oldValue, newValue);
             }
@@ -243,12 +244,14 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
 
     }
     private void playSound(int sound,PlayConfig config) {
-        soundPool.play(sound,
+       int streamID= soundPool.play(sound,
                 config.getLeftVolumnRatio(),// 左声道音量
                 config.getRightVolumnRatio(),// 右声道音量
                 config.getPriority(), // 优先级
                 config.getNumber(),// 循环播放次数
                 config.getRate());// 回放速度，该值在0.5-2.0之间 1为正常速度
+       // soundPool.stop(streamID);
+
     }
 
     public void start(){
@@ -299,7 +302,13 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
         if(fileDescriptor==null){
             return 0;
         }
-        return soundPool.load(fileDescriptor,0) ;
+        int loadSucc=soundPool.load(fileDescriptor,0);
+        try {
+            fileDescriptor.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return loadSucc ;
     }
 
 

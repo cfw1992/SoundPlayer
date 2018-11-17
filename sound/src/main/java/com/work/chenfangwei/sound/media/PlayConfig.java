@@ -26,7 +26,7 @@ public class PlayConfig {
                 setRightVolumnRatio(volumnRatio).
                 setRate(1).
                 setPriority(1)
-                .setNumber(1);
+                .setNumber(0);
         return playConfig;
     }
 
