@@ -7,8 +7,9 @@
 播放.不说那么多了下面介绍下如何使用.
     
    ## gradle集成配置
-             根  Gradle:aven { url 'https://www.jitpack.io' }
-             app Gradle：implementation 'com.github.cfw1992:SoundPlayer:1.0.0'
+         
+             根gradle: maven{url'https://www.jitpack.io'}
+             app gradle：implementation 'com.github.cfw1992:SoundPlayer:1.0.0'
      
     
    ## 1.相关权限,6.0需要申请相关权限
