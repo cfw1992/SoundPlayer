@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.work.chenfangwei.sound.media.SoundListner.DOWN_LOAD_SUCCESS;
+
 /*
 *  make by cfw
 * */
@@ -157,7 +159,11 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
             @Override
             public void success(String path) {
                 resource.setPath(path);
+                SoundListner soundListner=playConfig.getSoundLisner();
                 loadPathResource(resource,playConfig);
+                if(soundListner!=null){
+                    soundListner.state(DOWN_LOAD_SUCCESS);
+                }
             }
             @Override
             public void error(Throwable throwable) {
