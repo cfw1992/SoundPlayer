@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.work.chenfangwei.sound.media.SoundListner.DOWN_LOAD_SUCCESS;
+import static com.work.chenfangwei.sound.media.SoundListner.FAIL;
 
 /*
 *  make by cfw
@@ -97,6 +98,7 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
         if(!TextUtils.isEmpty(basePath)){
             cacheMannger.setBasePath(basePath);
         }
+
         if(filter!=null){
             cacheMannger.setFilter(filter);
         }
@@ -141,6 +143,7 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
         String path=resource.key();
         if(TextUtils.isEmpty(path)){
             SoundLog.e(" Path Not Found...",this);
+            sendState(playConfig.getSoundLisner(),FAIL);
             return;
         }
 
@@ -207,6 +210,9 @@ public class SmallSoundPlayer implements IAudioPlayer,SoundResource.ILoader{
     }
 
     private void sendState(SoundListner soundListner, int state) {
+        if(soundListner==null){
+            return;
+        }
         Message message=Message.obtain();
         message.what=HANDLER_PLAY_STATE;
         message.obj=soundListner;
